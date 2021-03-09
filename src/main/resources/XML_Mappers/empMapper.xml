@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ctbc.mapper.EmpMapper">
+	
+	<resultMap id="resultMapEmp" type="EmpVOgg">
+		<id property="empNo" column="empno"/>
+		<result property="empName" column="ename"/>
+		<result property="empJob" column="job"/>
+		<result property="empHiredate" column="hiredate"/>
+		<!-- 多對一設定 -->
+		<association property="deptVO" column="deptno" javaType="fuckDeptVO" 
+					 select="selectDeptById" fetchType="lazy">
+			<!-- <id property="deptNo" column="deptno"/> -->
+			<!-- <result property="deptName" column="dname"/> -->
+			<!-- <result property="deptLoc" column="loc"/> -->
+		</association> 
+	</resultMap>
+
+	<!-- <association select="xxx"> 標籤用的 SQL -->
+	<select id="selectDeptById" parameterType="int" resultMap="com.ctbc.mapper.DeptMapper.resultMapDept">
+		SELECT * FROM dept_TB10 WHERE deptno = #{deptID}
+	</select>
+
+	<sql id="select_frag">
+		SELECT * FROM emp_TB10
+	</sql>
+	
+	<select id="getEmp" resultMap="resultMapEmp">
+		<include refid="select_frag"/>
+		<where>
+			<if test="empNoGG != null">
+				AND empno = #{empNoGG}
+			</if>
+		</where>
+	</select>
+	
+	<!--【關聯設定】： #{deptVO.deptNo} → EmpVO型態參數有 ﹝屬性變數deptVO﹞，﹝屬性變數deptVO﹞中又有屬性 ﹝deptNo﹞ -->
+	<insert id="addEmp" parameterType="EmpVOgg">
+		INSERT INTO emp_TB10 ( ename, job, hiredate, deptno )
+		VALUES( #{empName} , #{empJob} , #{empHiredate} , #{deptVO.deptNo} )
+	</insert>
+	
+	<update id="updateEmp">
+		UPDATE emp_TB10 SET ename    = #{empNoGG.empName},
+							job      = #{empNoGG.empJob},
+							hiredate = #{empNoGG.empHiredate},
+							deptno   = #{empNoGG.deptNo} 
+		WHERE empno = #{empNoGG.empNo}
+	</update>
+	
+	<delete id="delEmp" parameterType="int">	
+		DELETE FROM emp_TB10 WHERE empno = #{whatever}
+	</delete>
+	
+	<!-- ﹝進階查詢﹞ -->
+	<select id="getEmpByDateInteval" resultMap="resultMapEmp">
+		SELECT * FROM emp_TB10 WHERE hiredate IN
+		<foreach item="data" collection="list" open="(" separator="," close=")">
+			#{data}
+		</foreach>
+	</select>
+	
+	<!-- ﹝多對一 關聯查詢﹞ -->
+	<select id="getEmpsWithDept" resultMap="resultMapEmp">
+		SELECT * FROM emp_TB10 JOIN dept_TB10 
+		ON emp_TB10.deptno = dept_TB10.deptno
+		<where>
+			<if test="empnoGG != null">
+			   AND empno = #{empnoGG}
+			</if>
+		</where>
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

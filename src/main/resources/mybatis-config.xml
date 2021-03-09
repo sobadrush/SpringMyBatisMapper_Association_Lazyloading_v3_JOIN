@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">  
+  
+<!-- [使用Log4J show-sql] http://blog.csdn.net/isea533/article/details/22931341 -->
+<!-- [使用Log4J show-sql] http://843977358.iteye.com/blog/2259796 -->
+
+<!-- 不少应用服务器的 classpath 中已经包含Commons Logging，如 Tomcat 和WebShpere， 
+     所以MyBatis会把它作为具体的日志实现。
+     记住这点非常重要。这意味着，在诸如 WebSphere的环境中——WebSphere提供了Commons Logging
+     的私有实现，你的Log4J配置将被忽略。 -->  
+  
+<configuration>  
+    <properties>  
+        <property name="dialect" value="sqlserver" />  <!-- not necessary -->
+    </properties>  
+    <settings>  
+        <setting name="logImpl" value="LOG4J" />   
+        
+        <!-- 開啟二級緩存 -->
+        <!-- <setting name="cacheEnabled" value="false"/> --><!-- 一二級緩存(false 關閉) : http://www.cnblogs.com/selene/p/4638648.html -->
+        
+        <!-- ﹝﹝﹝全域設定﹞﹞﹞-->
+        <!-- 開啟延遲加載 :  http://elim.iteye.com/blog/2350745 -->
+        <!--                 http://www.cnblogs.com/ckxlovejava/p/6081617.html -->
+        <!-- <setting name="lazyLoadingEnabled" value="true"/> --><!-- true 使用延迟加载，false禁用延迟加载。默认为true -->
+        <!-- 將積極加載改為消極加載 & 按需加載  -->
+        <!-- <setting name="aggressiveLazyLoading" value="false"/> -->
+        
+        <!-- 懶加載用 System.err.println() 看不出效果： http://blog.csdn.net/mingtian625/article/details/46846985 -->
+        <!-- <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/> myBatis 預設呼叫這些方法時會將懶加載的對象強制load進來 -->
+        <setting name="lazyLoadTriggerMethods" value="" /><!-- http://elim.iteye.com/blog/2350745 -->
+        
+        <!-- <setting name="proxyFactory" value="CGLIB"/> --><!-- CGLIB 動態代理 -->
+    </settings>  
+</configuration> 
+
+
+
